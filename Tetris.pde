@@ -25,7 +25,8 @@ void settings() {
 }
 
 void setup() {
-  frameRate(4);
+  
+  frameRate(100000);
 
   //the tetriminos which a 'dead'
   //we store them in a boolean
@@ -81,9 +82,18 @@ void draw() {
 
     //when a new piece is to be generated
     //we put the current piece to garbage
+
     if (newPiece) {
       for (int j = 0; j < tetrimino.length; j++) {
-        garbage[(int)tetrimino[j].x][(int)tetrimino[j].y] = true;
+        if ((int)tetrimino[j].y >= 0) {
+          garbage[(int)tetrimino[j].x][(int)tetrimino[j].y] = true;
+        } else {
+          textAlign(CENTER);
+          textSize(50);
+          fill(255, 0, 0);
+          text("GAME OVER!", width/2, height/2);
+          stop();
+        }
       }
       break;
     }
@@ -114,6 +124,7 @@ void draw() {
       }
     }
   }
+  text(frameRate, 100,100);
 }
 
 void keyPressed() {
@@ -179,10 +190,10 @@ void keyPressed() {
   }
 }
 
-  //ASSIGNMENTS
+//ASSIGNMENTS
 //GREEN
-//*Have the tetriminos spawn at the top above of the screen
-//*Implement the remaining tetriminos
+//*Have the tetriminos spawn at the top above of the screen DONE
+//*Implement the remaining tetriminos DONE
 //*Implement game over
 //*Implement score
 //*Have the game speed up as time goes on

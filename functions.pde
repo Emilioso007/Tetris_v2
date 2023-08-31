@@ -30,12 +30,38 @@ PVector[] createNewPiece() {
   //we need another why to pick tetriminos
   //when we have more then two.
   //pTetrimino = random(1) <= 0.5 ? OPiece : IPiece;
-  pTetrimino = IPiece;
+  int choice = int(random(7));
+  switch(choice) {
+  case 0:
+    pTetrimino = IPiece;
+    break;
+  case 1:
+    pTetrimino = JPiece;
+    break;
+  case 2:
+    pTetrimino = LPiece;
+    break;
+  case 3:
+    pTetrimino = OPiece;
+    break;
+  case 4:
+    pTetrimino = SPiece;
+    break;
+  case 5:
+    pTetrimino = TPiece;
+    break;
+  case 6:
+    pTetrimino = ZPiece;
+    break;
+  default:
+    pTetrimino = ZPiece;
+    break;
+  }
 
   //we move the piece, to where we want to spawn
   //it. It's importent that translation and the
   //tetrimino[] are in synch for rotation to function
-  translation = new PVector(int(screenWidth/2),-5);
+  translation = new PVector(int(screenWidth/2), -5);
 
   //we use the copy function to make sure that
   //we don't change the original tetrimino.
