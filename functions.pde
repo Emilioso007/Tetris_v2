@@ -29,7 +29,8 @@ PVector[] createNewPiece() {
   //TETRINARY EXPRESSION//
   //we need another why to pick tetriminos
   //when we have more then two.
-  pTetrimino = random(1) <= 0.5 ? OPiece : IPiece;
+  //pTetrimino = random(1) <= 0.5 ? OPiece : IPiece;
+  pTetrimino = IPiece;
 
   //we move the piece, to where we want to spawn
   //it. It's importent that translation and the
