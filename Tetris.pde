@@ -25,7 +25,7 @@ void settings() {
 }
 
 void setup() {
-  
+
   frameRate(100000);
 
   //the tetriminos which a 'dead'
@@ -90,7 +90,17 @@ void draw() {
         } else {
           textAlign(CENTER);
           textSize(50);
-          fill(255, 0, 0);
+          //fill(255, 0, 0);
+          //text("GAME OVER!", width/2, height/2);
+          fill(0);
+          for (int x = -2; x < 3; x++) {
+            //  for(int y = -1; y < 2; y++){
+            //    text("LIKE THIS!", 20+x,20+y);
+            //  }
+            text("GAME OVER!", width/2+x, height/2);
+            text("GAME OVER!", width/2, height/2+x);
+          }
+          fill(255,0,0);
           text("GAME OVER!", width/2, height/2);
           stop();
         }
@@ -124,7 +134,7 @@ void draw() {
       }
     }
   }
-  text(frameRate, 100,100);
+  text(frameRate, 100, 100);
 }
 
 void keyPressed() {
