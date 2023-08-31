@@ -1,7 +1,7 @@
 //checks if the tetrimino collides
 //with anything
 boolean collision(PVector[] tetrimino) {
-  for (int i = 0; i < tetrimino.length; i++) {
+  for (int i = 0; i < 4; i++) {
     PVector mino = tetrimino[i];
 
     //collides with screen edges
@@ -11,7 +11,7 @@ boolean collision(PVector[] tetrimino) {
       return true;
     }
     //collides with garbage
-    if (mino.y >= 0 && garbage[round(mino.x)][round(mino.y)] == true) {
+    if (mino.y >= 0 && garbage[round(mino.x)][round(mino.y)] != color(0,0,0)) {
       return true;
     }
   }
@@ -24,7 +24,7 @@ PVector[] createNewPiece() {
 
   PVector[] pTetrimino;
 
-  PVector[] newP = new PVector[4];
+  PVector[] newP = new PVector[5];
 
   //TETRINARY EXPRESSION//
   //we need another why to pick tetriminos
@@ -69,6 +69,6 @@ PVector[] createNewPiece() {
   newP[1] = pTetrimino[1].copy().add(translation);
   newP[2] = pTetrimino[2].copy().add(translation);
   newP[3] = pTetrimino[3].copy().add(translation);
-
+  newP[4] = pTetrimino[4].copy();
   return newP;
 }

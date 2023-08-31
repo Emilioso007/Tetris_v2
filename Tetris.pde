@@ -15,7 +15,9 @@ PVector translation;
 
 //the old blocks in level, not
 //yet removed
-boolean[][] garbage;
+color[][] garbage;
+
+int score;
 
 //Special functions, where we
 //are allowed to use viables
@@ -26,13 +28,21 @@ void settings() {
 
 void setup() {
 
-  frameRate(100000);
+  frameRate(5);
+  
+  score = 0;
 
   //the tetriminos which a 'dead'
   //we store them in a boolean
   //array, as we only need to
   //if they are there or not
-  garbage = new boolean[screenWidth][screenHeight];
+  garbage = new color[screenWidth][screenHeight];
+
+  for (int x = 0; x < screenWidth; x++) {
+    for (int y = 0; y < screenHeight; y++) {
+      garbage[x][y] = color(0, 0, 0);
+    }
+  }
 
   //should we create a new
   //tetrimino at the start
@@ -56,15 +66,17 @@ void draw() {
 
   //draw the minos of the active
   //tetrimino.
-  for (int i = 0; i < tetrimino.length; i++) {
+  for (int i = 0; i < 4; i++) {
     PVector mino = tetrimino[i];
+    fill(tetrimino[4].x, tetrimino[4].y, tetrimino[4].z);
     rect(mino.x*tileSize, mino.y*tileSize, tileSize, tileSize);
   }
 
   //draw garbage
   for (int y = 0; y < screenHeight; y++) {
     for (int x = 0; x < screenWidth; x++) {
-      if (garbage[x][y]) {
+      if (garbage[x][y] != color(0, 0, 0)) {
+        fill(garbage[x][y]);
         rect(x*tileSize, y*tileSize, tileSize, tileSize);
       }
     }
@@ -72,10 +84,10 @@ void draw() {
 
   //mino hasn't hit the lower bounds
   //of the level or garbage
-  for (int i = tetrimino.length-1; i >= 0; i--) {
-    PVector mino = tetrimino[i];
-    if (mino.y >= 0) { //we don't check collision if piece is above the sceen
-      if (mino.y >= screenHeight-1 || garbage[(int)mino.x][(int)mino.y+1]) {
+  for (int i = 4-1; i >= 0; i--) {
+
+    if (tetrimino[i].y >= 0) { //we don't check collision if piece is above the sceen
+      if (tetrimino[i].y >= screenHeight-1 || garbage[(int)tetrimino[i].x][(int)tetrimino[i].y+1] != color(0, 0, 0)) {
         newPiece = true;
       }
     }
@@ -84,9 +96,9 @@ void draw() {
     //we put the current piece to garbage
 
     if (newPiece) {
-      for (int j = 0; j < tetrimino.length; j++) {
+      for (int j = 0; j < 4; j++) {
         if ((int)tetrimino[j].y >= 0) {
-          garbage[(int)tetrimino[j].x][(int)tetrimino[j].y] = true;
+          garbage[(int)tetrimino[j].x][(int)tetrimino[j].y] = color(tetrimino[4].x, tetrimino[4].y, tetrimino[4].z);
         } else {
           textAlign(CENTER);
           textSize(50);
@@ -100,7 +112,7 @@ void draw() {
             text("GAME OVER!", width/2+x, height/2);
             text("GAME OVER!", width/2, height/2+x);
           }
-          fill(255,0,0);
+          fill(255, 0, 0);
           text("GAME OVER!", width/2, height/2);
           stop();
         }
@@ -110,7 +122,7 @@ void draw() {
   }
 
   if (!newPiece) {
-    for (int i = tetrimino.length-1; i >= 0; i--) {
+    for (int i = 4-1; i >= 0; i--) {
       PVector mino = tetrimino[i];
       mino.add(new PVector(0, 1));
     }
@@ -120,9 +132,11 @@ void draw() {
   //check for cleared lines
   for (int y = 0; y < screenHeight; y++) {
     boolean lineClear = true;
+    score++;
     for (int x = 0; x < screenWidth; x++) {
-      if (!garbage[x][y]) {
+      if (garbage[x][y] == color(0, 0, 0)) {
         lineClear = false;
+        score--;
         break;
       }
     }
@@ -130,42 +144,49 @@ void draw() {
       for (int i = y; i > 0; i--) {
         for (int x = 0; x < screenWidth; x++) {
           garbage[x][i] = garbage[x][i-1];
+          
         }
       }
     }
   }
-  text(frameRate, 100, 100);
+  fill(255);
+  textSize(25);
+  text("Score: " + score, 100, 100);
 }
 
 void keyPressed() {
   int currKey = keyCode;
-  PVector[] newLocation = new PVector[4];
+  PVector[] newLocation = new PVector[5];
 
   if (key == CODED) {
     switch (currKey) {
     case LEFT:
       //copy the tetrimino and move it left
       //if the new location is valid
-      PVector copyTetrimino[] = new PVector[tetrimino.length];
-      for (int i = 0; i < tetrimino.length; i++) {
+      PVector copyTetrimino[] = new PVector[5];
+      for (int i = 0; i < 4; i++) {
         copyTetrimino[i] = tetrimino[i].copy().sub(new PVector(1, 0));
       }
+      copyTetrimino[4] = tetrimino[4].copy();
       if (!collision(copyTetrimino)) {
         tetrimino = copyTetrimino;
         translation.sub(new PVector(1, 0));
       }
+
       break;
     case RIGHT:
       //copy the tetrimino and move it right
       //if the new location is valid
-      PVector copyTetrimino2[] = new PVector[tetrimino.length];
-      for (int i = 0; i < tetrimino.length; i++) {
+      PVector copyTetrimino2[] = new PVector[5];
+      for (int i = 0; i < 4; i++) {
         copyTetrimino2[i] = tetrimino[i].copy().add(new PVector(1, 0));
       }
+      copyTetrimino2[4] = tetrimino[4].copy();
       if (!collision(copyTetrimino2)) {
         tetrimino = copyTetrimino2;
         translation.add(new PVector(1, 0));
       }
+
       break;
     case UP:
       //iterate through all minos in the
@@ -173,28 +194,32 @@ void keyPressed() {
       //we then check if the new location
       //is valid, if yes we use the new
       //copy as the current tetrimino
-      for (int i = 0; i < tetrimino.length; i++) {
+      for (int i = 0; i < 4; i++) {
         PVector mino = tetrimino[i].copy();
         mino.set(new PVector(
           round(mino.copy().sub(translation).rotate(radians(-90)).add(translation).x),
           round(mino.copy().sub(translation).rotate(radians(-90)).add(translation).y)));
         newLocation[i] = mino;
       }
+      newLocation[4] = tetrimino[4].copy();
       if (!collision(newLocation)) {
         tetrimino = newLocation;
       }
+
       break;
     case DOWN:
-      for (int i = 0; i < tetrimino.length; i++) {
+      for (int i = 0; i < 4; i++) {
         PVector mino = tetrimino[i].copy();
         mino.set(new PVector(
           round(mino.copy().sub(translation).rotate(radians(90)).add(translation).x),
           round(mino.copy().sub(translation).rotate(radians(90)).add(translation).y)));
         newLocation[i] = mino;
       }
+      newLocation[4] = tetrimino[4].copy();
       if (!collision(newLocation)) {
         tetrimino = newLocation;
       }
+
       break;
     }
   }
